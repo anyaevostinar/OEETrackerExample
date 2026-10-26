@@ -28,9 +28,9 @@ class OrgWorld : public emp::World<Organism> {
 
         emp::Ptr<emp::Systematics<Organism, double> > sys;
         sys.New([](Organism & o){return std::round(o.GetCooperationProbability() * 100.0) / 100.0;});
-        oee.New(sys, [](emp::Ptr<emp::Taxon<double>> taxon){return std::round(taxon->GetInfo() * 100.0) / 100.0;}, [](double org_prob){
-            return 1;
-        }); // second lambda needs to take type returned by first lambda
+        auto get_genotype_lambda =  [](emp::Ptr<emp::Taxon<double>> taxon){return std::round(taxon->GetInfo() * 100.0) / 100.0;};
+        auto no_complexity_lambda = [](double org_prob){ return 1;};
+        oee.New(sys, get_genotype_lambda , no_complexity_lambda ); // second lambda needs to take type returned by first lambda
         oee->SetResolution(MODES_RESOLUTION);
         oee->SetGenerationInterval(FILTER_LENGTH);
         AddSystematics(sys);
